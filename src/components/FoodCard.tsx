@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { clsx } from 'clsx';
@@ -60,9 +59,12 @@ export const FoodCard: React.FC<FoodCardProps> = ({ item, variant = 'list', isHi
             {item.category}
           </span>
           
-          <p className="text-gray-500 dark:text-gray-400 font-medium px-4 leading-relaxed transition-colors">
-            “{item.description}”
-          </p>
+          {/* Description - 支持长文本显示 */}
+          <div className="px-4 w-full">
+            <p className="text-gray-500 dark:text-gray-400 font-medium text-center leading-relaxed transition-colors break-words hyphens-auto">
+              "{item.description}"
+            </p>
+          </div>
         </div>
       </motion.div>
     );
