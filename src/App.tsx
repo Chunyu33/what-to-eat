@@ -320,7 +320,7 @@ const App: React.FC = () => {
                 rotate: [0, -2, 2, -2, 2, 0],
                 opacity: 1 
               }}
-              transition={{ duration: 0.5, type: "spring", bounce: 0.5 }}
+              transition={{ duration: 0.5, type: "tween", ease: "easeInOut" }}
               className="relative z-10 max-w-lg"
             >
               <motion.div 
