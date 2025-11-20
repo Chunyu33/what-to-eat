@@ -1,73 +1,114 @@
-# React + TypeScript + Vite
+# 今天吃什么 🍜
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+一个有趣的美食随机选择器，帮你解决"今天吃什么"的选择困难症！
 
-Currently, two official plugins are available:
+## ✨ 功能特点
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🎲 **随机选择**：从美食库中随机推荐美食
+- 🔍 **搜索功能**：支持按名称、分类、描述搜索美食
+- 🌙 **暗色模式**：支持明暗主题切换，保护眼睛
+- 🎊 **动画效果**：流畅的转场动画和选中庆祝效果
+- 📱 **响应式设计**：完美适配桌面和移动设备
+- 😠 **愤怒模式**：连续选择困难5次后的特殊彩蛋
 
-## React Compiler
+## 🛠️ 技术栈
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **前端框架**：React 19 + TypeScript
+- **构建工具**：Vite
+- **样式框架**：Tailwind CSS
+- **动画库**：Framer Motion
+- **图标库**：Lucide React
+- **工具库**：clsx, tailwind-merge
+- **彩蛋效果**：canvas-confetti
 
-## Expanding the ESLint configuration
+## 🚀 快速开始
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 安装依赖
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 开发模式
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
 ```
+
+### 构建生产版本
+
+```bash
+npm run build
+```
+
+### 预览生产版本
+
+```bash
+npm run preview
+```
+
+### 代码检查
+
+```bash
+npm run lint
+```
+
+## 📁 项目结构
+
+```
+src/
+├── components/
+│   └── FoodCard.tsx          # 美食卡片组件
+├── data/
+│   └── index.ts              # 美食数据
+├── types/
+│   └── index.ts              # TypeScript 类型定义
+├── App.tsx                   # 主应用组件
+├── index.css                 # 全局样式
+└── main.tsx                  # 应用入口
+```
+
+## 🎨 主题配置
+
+项目支持明暗两种主题模式：
+- 亮色模式：橙色系配色，温暖活泼
+- 暗色模式：深色系配色，护眼舒适
+
+主题切换通过在 `document.documentElement` 上添加/移除 `dark` 类来实现。
+
+## 🌐 部署配置
+
+项目配置了 `base: '/eat/'` 路径前缀，方便部署到 nginx 子目录。
+
+### Nginx 配置示例
+
+```nginx
+location /eat/ {
+    alias /path/to/dist/;
+    try_files $uri $uri/ /eat/index.html;
+}
+```
+
+## 🎮 使用说明
+
+1. **开始随机**：点击"开始随机"按钮，系统会快速滚动展示美食
+2. **查看结果**：滚动停止后显示最终选择的美食
+3. **搜索美食**：在底部搜索框输入关键词筛选美食
+4. **切换主题**：点击右上角的主题切换按钮
+5. **重试次数**：右上角显示当前重试次数，最多5次
+
+## 📱 响应式设计
+
+- 桌面端：8列网格布局
+- 平板端：6列网格布局  
+- 移动端：3列网格布局
+
+## 🎭 特殊功能
+
+- **愤怒模式**：连续5次重新选择后触发特殊彩蛋
+- **庆祝动画**：选中美食后的五彩纸屑效果
+- **平滑过渡**：所有交互都有流畅的动画效果
+
+## 📄 许可证
+
+MIT License
