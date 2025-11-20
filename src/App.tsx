@@ -7,6 +7,7 @@ import { ActionButton } from './components/ActionButton';
 import { FoodListButton } from './components/FoodListButton';
 import { FoodListPopup } from './components/FoodListPopup';
 import { AngryMode } from './components/AngryMode';
+import { Footer } from './components/Footer';
 import { useDarkMode } from './hooks/useDarkMode';
 import type { GameState, FoodItem } from './types';
 
@@ -182,6 +183,9 @@ const App: React.FC = () => {
         onReset={handleAngryModeReset}
         firstFood={FOOD_DATA[0]}
       />
+      
+      {/* 页脚 */}
+      <Footer />
     </div>
   );
 };
