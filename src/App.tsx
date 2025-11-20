@@ -17,6 +17,7 @@ const App: React.FC = () => {
   const [retryCount, setRetryCount] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isFoodListOpen, setIsFoodListOpen] = useState(false);
   
   // Refs for animation loop
   const timeoutRef = useRef<number | null>(null);
@@ -194,53 +195,110 @@ const App: React.FC = () => {
           </motion.button>
       </div>
 
-      {/* Inventory List with Search */}
-      <div className="flex-none bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-t border-orange-100 dark:border-slate-800 rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.05)] z-20 max-h-[40vh] flex flex-col transition-colors duration-300">
-         {/* Drawer Header & Search */}
-         <div className="px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider flex items-center gap-1 shrink-0">
-              美食库 ({filteredFood.length})
-            </h3>
-            
-            {/* Search Bar */}
-            <div className="relative w-full sm:w-48">
-              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input 
-                type="text"
-                placeholder="搜索美食..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-200 text-sm rounded-full pl-9 pr-8 py-1.5 border-none focus:ring-2 focus:ring-orange-200 dark:focus:ring-orange-900/50 transition-all"
-              />
-              {searchTerm && (
-                <button 
-                  onClick={() => setSearchTerm('')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
-                >
-                  <X size={14} />
-                </button>
-              )}
-            </div>
-         </div>
-
-         {/* List Content */}
-         <div className="overflow-y-auto p-4 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
-            {filteredFood.length > 0 ? (
-              filteredFood.map((item) => (
-                <FoodCard 
-                  key={item.id} 
-                  item={item} 
-                  variant="list"
-                  isHighlighted={winnerId === item.id}
-                />
-              ))
-            ) : (
-              <div className="col-span-full py-8 text-center text-gray-400 dark:text-gray-500 text-sm">
-                未找到相关美食，换个词试试？
-              </div>
-            )}
-         </div>
+      {/* Food List Button */}
+      <div className="flex-none p-4 flex justify-center z-30">
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setIsFoodListOpen(true)}
+          className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-orange-200 dark:border-slate-700 text-orange-600 dark:text-orange-400 font-medium py-2 px-6 rounded-full flex items-center gap-2 transition-all hover:bg-orange-50 dark:hover:bg-slate-700"
+        >
+          <Search size={16} />
+          美食库 ({filteredFood.length})
+        </motion.button>
       </div>
+
+      {/* Food List Popup */}
+      <AnimatePresence>
+        {isFoodListOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm flex items-end justify-center"
+            onClick={() => {
+              setIsFoodListOpen(false);
+              setSearchTerm('');
+            }}
+          >
+            <motion.div 
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="bg-white dark:bg-slate-900 w-full max-h-[70vh] rounded-t-3xl shadow-2xl flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Handle Bar */}
+              <div className="flex justify-center py-3">
+                <div className="w-12 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+              </div>
+              
+              {/* Header */}
+              <div className="px-6 pb-4 border-b border-gray-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <h3 className="text-lg font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                  <Search size={18} />
+                  美食库 ({filteredFood.length})
+                </h3>
+                
+                {/* Close Button */}
+                <button 
+                  onClick={() => {
+              setIsFoodListOpen(false);
+              setSearchTerm('');
+            }}
+                  className="p-2 rounded-full bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Search Bar */}
+              <div className="px-6 py-4 border-b border-gray-100 dark:border-slate-800">
+                <div className="relative">
+                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input 
+                    type="text"
+                    placeholder="搜索美食..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-200 text-sm rounded-full pl-10 pr-10 py-3 border-none focus:ring-2 focus:ring-orange-200 dark:focus:ring-orange-900/50 transition-all"
+                    autoFocus
+                  />
+                  {searchTerm && (
+                    <button 
+                      onClick={() => setSearchTerm('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                    >
+                      <X size={16} />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* List Content */}
+              <div className="flex-1 overflow-y-auto p-4">
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
+                  {filteredFood.length > 0 ? (
+                    filteredFood.map((item) => (
+                      <FoodCard 
+                        key={item.id} 
+                        item={item} 
+                        variant="list"
+                        isHighlighted={winnerId === item.id}
+                      />
+                    ))
+                  ) : (
+                    <div className="col-span-full py-8 text-center text-gray-400 dark:text-gray-500 text-sm">
+                      未找到相关美食，换个词试试？
+                    </div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ANGRY MODE OVERLAY */}
       <AnimatePresence>
