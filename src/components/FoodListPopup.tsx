@@ -51,19 +51,21 @@ export const FoodListPopup: React.FC<FoodListPopupProps> = ({
             </div>
             
             {/* 头部 */}
-            <div className="px-6 pb-4 border-b border-gray-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <h3 className="text-lg font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                <Search size={18} />
-                美食库 ({filteredFood.length})
-              </h3>
-              
-              {/* 关闭按钮 */}
-              <button 
-                onClick={onClose}
-                className="p-2 rounded-full bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors"
-              >
-                <X size={18} />
-              </button>
+            <div className="px-6 pb-4 border-b border-gray-100 dark:border-slate-800">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                  <Search size={18} />
+                  美食库 ({filteredFood.length})
+                </h3>
+                
+                {/* 关闭按钮 */}
+                <button 
+                  onClick={onClose}
+                  className="p-2 rounded-full bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors flex-shrink-0"
+                >
+                  <X size={18} />
+                </button>
+              </div>
             </div>
 
             {/* 搜索栏 */}
