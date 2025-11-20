@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Utensils, Moon, Sun, Zap } from 'lucide-react';
 
 interface HeaderProps {
