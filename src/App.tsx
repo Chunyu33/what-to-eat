@@ -6,7 +6,7 @@ import { Utensils, RefreshCw, Zap, Search, Moon, Sun, X } from 'lucide-react';
 import { FOOD_DATA } from './data';
 import { FoodCard } from './components/FoodCard';
 import type { GameState, FoodItem } from './types';
-import { clsx } from 'clsx';
+
 
 const MAX_RETRIES = 5;
 
