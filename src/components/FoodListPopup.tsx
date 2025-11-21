@@ -78,7 +78,6 @@ export const FoodListPopup: React.FC<FoodListPopupProps> = ({
                   value={searchTerm}
                   onChange={(e) => onSearchChange(e.target.value)}
                   className="w-full bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-200 text-sm rounded-full pl-10 pr-10 py-3 border-none focus:ring-2 focus:ring-orange-200 dark:focus:ring-orange-900/50 transition-all"
-                  autoFocus
                 />
                 {searchTerm && (
                   <button 
