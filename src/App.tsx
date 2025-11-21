@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import ReactDOM from 'react-dom';
 import confetti from 'canvas-confetti';
 import { FOOD_DATA } from './data';
 import { Header } from './components/Header';
@@ -67,15 +68,27 @@ const App: React.FC = () => {
    * 开始随机选择美食
    */
   const handleStart = useCallback(() => {
+    // 防止在动画进行中再次点击
+    if (gameState === 'spinning') return;
+    
     if (retryCount >= MAX_RETRIES) {
       setGameState('angry');
       return;
     }
 
-    setGameState('spinning');
-    setWinnerId(null);
-    setRetryCount(prev => prev + 1);
-    setSearchTerm(''); // Clear search on spin so we can see the winner in list
+    // 清理任何未完成的定时器
+    if (timeoutRef.current) {
+      window.clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+
+    // 使用React的批量更新来确保状态同步
+    ReactDOM.flushSync(() => {
+      setGameState('spinning');
+      setWinnerId(null);
+      setRetryCount(prev => prev + 1);
+      setSearchTerm(''); // Clear search on spin so we can see the winner in list
+    });
 
     let speed = 50;
     let counter = 0;
@@ -95,14 +108,18 @@ const App: React.FC = () => {
         
         timeoutRef.current = window.setTimeout(spin, speed);
       } else {
-        setWinnerId(nextItem.id);
-        setGameState('won');
-        triggerConfetti();
+        // 确保最终状态正确更新
+        setTimeout(() => {
+          setWinnerId(nextItem.id);
+          setGameState('won');
+          triggerConfetti();
+        }, 50); // 短暂延迟确保UI更新
       }
     };
 
-    spin();
-  }, [retryCount]);
+    // 使用requestAnimationFrame确保在移动设备上的动画流畅
+    requestAnimationFrame(spin);
+  }, [retryCount, gameState]);
 
   // 初始化：随机选择一个美食作为初始显示
   useEffect(() => {
