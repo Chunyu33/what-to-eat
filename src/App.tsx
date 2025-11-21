@@ -27,6 +27,7 @@ const App: React.FC = () => {
   const [retryCount, setRetryCount] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [isFoodListOpen, setIsFoodListOpen] = useState(false);
+  const [isConfettiActive, setIsConfettiActive] = useState(false);
 
   // 使用自定义 Hooks
   const { isDarkMode, toggleDarkMode } = useDarkMode();
@@ -38,6 +39,7 @@ const App: React.FC = () => {
    * 触发五彩纸屑庆祝效果
    */
   const triggerConfetti = () => {
+    setIsConfettiActive(true);
     const duration = 3000;
     const end = Date.now() + duration;
 
@@ -59,6 +61,8 @@ const App: React.FC = () => {
 
       if (Date.now() < end) {
         requestAnimationFrame(frame);
+      } else {
+        setIsConfettiActive(false);
       }
     };
     frame();
@@ -68,8 +72,8 @@ const App: React.FC = () => {
    * 开始随机选择美食
    */
   const handleStart = useCallback(() => {
-    // 防止在动画进行中再次点击
-    if (gameState === 'spinning') return;
+    // 防止在动画进行中或纸屑动画期间再次点击
+    if (gameState === 'spinning' || isConfettiActive) return;
     
     if (retryCount >= MAX_RETRIES) {
       setGameState('angry');
@@ -119,7 +123,7 @@ const App: React.FC = () => {
 
     // 使用requestAnimationFrame确保在移动设备上的动画流畅
     requestAnimationFrame(spin);
-  }, [retryCount, gameState]);
+  }, [retryCount, gameState, isConfettiActive]);
 
   // 初始化：随机选择一个美食作为初始显示
   useEffect(() => {
@@ -175,6 +179,7 @@ const App: React.FC = () => {
       <ActionButton
         gameState={gameState}
         onStart={handleStart}
+        isConfettiActive={isConfettiActive}
       />
 
       {/* 美食库触发按钮 */}
