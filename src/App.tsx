@@ -10,6 +10,7 @@ import { FoodListPopup } from './components/FoodListPopup';
 import { AngryMode } from './components/AngryMode';
 import { Footer } from './components/Footer';
 import { useDarkMode } from './hooks/useDarkMode';
+import { getFoodByTimeOfDay, getCurrentTimeOfDay, TimeOfDay } from './utils/timeUtils';
 import type { GameState, FoodItem } from './types';
 
 // 最大重试次数常量
@@ -28,6 +29,7 @@ const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isFoodListOpen, setIsFoodListOpen] = useState(false);
   const [isConfettiActive, setIsConfettiActive] = useState(false);
+  const [selectedTimeOfDay, setSelectedTimeOfDay] = useState<TimeOfDay | 'all'>(getCurrentTimeOfDay());
 
   // 使用自定义 Hooks
   const { isDarkMode, toggleDarkMode } = useDarkMode();
@@ -98,10 +100,15 @@ const App: React.FC = () => {
     let counter = 0;
     const totalSpins = 20 + Math.floor(Math.random() * 10);
     
+    // 根据时间段过滤的美食数据
+    const availableFood = selectedTimeOfDay === 'all' 
+      ? FOOD_DATA 
+      : getFoodByTimeOfDay(FOOD_DATA, selectedTimeOfDay);
+    
     const spin = () => {
-      // Pick completely random item
-      const randomIndex = Math.floor(Math.random() * FOOD_DATA.length);
-      const nextItem = FOOD_DATA[randomIndex];
+      // 从过滤后的美食中随机选择
+      const randomIndex = Math.floor(Math.random() * availableFood.length);
+      const nextItem = availableFood[randomIndex];
       
       setDisplayItem(nextItem);
       counter++;
@@ -123,11 +130,14 @@ const App: React.FC = () => {
 
     // 使用requestAnimationFrame确保在移动设备上的动画流畅
     requestAnimationFrame(spin);
-  }, [retryCount, gameState, isConfettiActive]);
+  }, [retryCount, gameState, isConfettiActive, selectedTimeOfDay]);
 
-  // 初始化：随机选择一个美食作为初始显示
+  // 初始化：根据当前选择的时间段随机选择一个美食作为初始显示
   useEffect(() => {
-    setDisplayItem(FOOD_DATA[Math.floor(Math.random() * FOOD_DATA.length)]);
+    const initialFood = selectedTimeOfDay === 'all' 
+      ? FOOD_DATA 
+      : getFoodByTimeOfDay(FOOD_DATA, selectedTimeOfDay);
+    setDisplayItem(initialFood[Math.floor(Math.random() * initialFood.length)]);
     
     // 清理定时器
     return () => {
@@ -135,10 +145,15 @@ const App: React.FC = () => {
         window.clearTimeout(timeoutRef.current);
       }
     };
-  }, []);
+  }, [selectedTimeOfDay]);
+
+  // 时间段过滤逻辑
+  const timeFilteredFood = selectedTimeOfDay === 'all' 
+    ? FOOD_DATA 
+    : getFoodByTimeOfDay(FOOD_DATA, selectedTimeOfDay);
 
   // 搜索过滤逻辑
-  const filteredFood = FOOD_DATA.filter(item => 
+  const filteredFood = timeFilteredFood.filter(item => 
     item.name.includes(searchTerm) || 
     item.category.includes(searchTerm) ||
     item.description.includes(searchTerm)
@@ -158,6 +173,18 @@ const App: React.FC = () => {
     setDisplayItem(firstFood);
   }, []);
 
+  // 处理时间段过滤变化
+  const handleTimeOfDayChange = useCallback((timeOfDay: TimeOfDay | 'all') => {
+    setSelectedTimeOfDay(timeOfDay);
+    // 如果当前显示的美食不符合新的时间段过滤，则重新选择
+    if (timeOfDay !== 'all' && displayItem && displayItem.timeOfDay) {
+      const filtered = getFoodByTimeOfDay(FOOD_DATA, timeOfDay);
+      if (!displayItem.timeOfDay.includes(timeOfDay)) {
+        setDisplayItem(filtered[Math.floor(Math.random() * filtered.length)]);
+      }
+    }
+  }, [displayItem]);
+
   return (
     <div className="min-h-screen transition-colors duration-500 ease-in-out bg-gradient-to-b from-orange-50 via-orange-50/50 to-rose-100 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 text-slate-800 dark:text-slate-100 font-sans relative selection:bg-orange-200 dark:selection:bg-orange-900 flex flex-col overflow-hidden">
       
@@ -166,7 +193,9 @@ const App: React.FC = () => {
         isDarkMode={isDarkMode}
         retryCount={retryCount}
         maxRetries={MAX_RETRIES}
+        selectedTimeOfDay={selectedTimeOfDay}
         onToggleDarkMode={toggleDarkMode}
+        onTimeOfDayChange={handleTimeOfDayChange}
       />
 
       {/* 主舞台区域 */}
