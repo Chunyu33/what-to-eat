@@ -12,6 +12,10 @@
   }
 }
 
+#root {
+  @apply bg-white dark:bg-gray-900;
+}
+
 /* 自定义滚动条样式 */
 ::-webkit-scrollbar {
   width: 6px;
