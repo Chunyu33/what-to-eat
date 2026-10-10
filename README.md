@@ -115,11 +115,20 @@ Cloudflare Dashboard → Workers & Pages → Create → Pages → 连接 Git 仓
 | Build output directory | `dist` |
 | Root directory | 留空（仓库根目录） |
 
-**必须加一个环境变量**：
+**Node 版本必须在仓库里锁死**：
 
-| 变量名 | 值 | 原因 |
-|---|---|---|
-| `NODE_VERSION` | `22` | Vite 7 要求 Node `^20.19.0 \|\| >=22.12.0`，Pages 默认版本可能偏低，不设会直接构建失败 |
+Vite 7 要求 Node `^20.19.0 || >=22.12.0`，而 Cloudflare Pages 的构建镜像有两代
+（v2 默认 Node 18.17.1、v3 默认 22.16.0），项目被分到哪一代不完全可控 —— 分到 v2 就直接构建失败。
+
+仓库根目录已经放了 `.nvmrc`（内容 `22`），Cloudflare 会自动读取。
+它**同时作用于生产环境和预览环境**，比在 Dashboard 手动配 `NODE_VERSION`
+（生产和预览要分别设，很容易漏一个）更省心。
+
+如果仍想在 Dashboard 兜一层，展开「环境变量（高级）」加：
+
+| 变量名 | 值 |
+|---|---|
+| `NODE_VERSION` | `22` |
 
 之后 push 到生产分支自动发布，PR 会自动生成预览环境。
 
