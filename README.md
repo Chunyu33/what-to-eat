@@ -115,23 +115,32 @@ Cloudflare Dashboard → Workers & Pages → Create → Pages → 连接 Git 仓
 | Build output directory | `dist` |
 | Root directory | 留空（仓库根目录） |
 
-**为什么 build command 前面要加 `npm install`**：
+**关于原生模块与 lock 文件（踩过的坑）**
 
-`package-lock.json` 是在 Windows 上生成的，`packages` 段里只实体化了 Windows 版的原生二进制
-（`@rollup/rollup-win32-x64-msvc`），缺少 Linux 对应的 `@rollup/rollup-linux-x64-gnu`
-（npm 的历史遗留问题，见 [npm/cli#4828](https://github.com/npm/cli/issues/4828)）。
+`package-lock.json` 原本在 Windows 上生成，`packages` 段里**只实体化了 Windows 版的原生二进制**
+（`@rollup/rollup-win32-x64-msvc`），缺少 Linux 的 `@rollup/rollup-linux-x64-gnu`
+（npm 的老问题，见 [npm/cli#4828](https://github.com/npm/cli/issues/4828)）。
 
-Cloudflare 默认执行 `npm clean-install`（等价 `npm ci`），它**严格按 lock 文件安装、
-不补齐其他平台的包**，于是构建阶段 rollup 加载不到原生模块直接崩：
+Cloudflare 执行 `npm clean-install`（等价 `npm ci`），它**严格按 lock 安装、不补齐其他平台的包**，
+于是构建阶段 rollup 加载不到原生模块直接崩：
 
 ```
 Error: Cannot find module @rollup/rollup-linux-x64-gnu
 ```
 
-Vercel 默认用的是 `npm install`，会按当前平台补齐，所以同样的仓库在 Vercel 上不会暴露这个问题。
+Vercel 默认用 `npm install`（按当前平台补齐），所以同样的仓库一直没暴露这个问题。
 
-构建命令里显式跑一次 `npm install` 就能补上缺失的平台包（依赖已装好，这步很快）。
-改完记得在 Deployments 页面点 **Retry deployment**。
+**已修**：用 `npm install --package-lock-only --os=linux --cpu=x64` 重新生成，
+再补齐各平台缺失的 `resolved` / `integrity`。现在 lock 里 **49 个平台专有包的条目全部完整**，
+`npm ci` 在 Linux 上能正常装到 rollup / esbuild 的原生模块。
+
+构建命令里仍保留一句 `npm install` 作为保险：万一本地的 `npm install` 又把 lock 精简回单平台，
+这一句能兜住。多花几秒，换构建稳定。
+
+> ⚠️ 以后改依赖后提交 lock 前，**确认 Linux 条目还在**：
+> `grep -c 'rollup-linux-x64-gnu' package-lock.json` 应该 ≥ 1。
+
+改完配置记得在 Deployments 页面点 **Retry deployment**。
 
 **Node 版本必须在仓库里锁死**：
 
