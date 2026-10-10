@@ -111,9 +111,27 @@ Cloudflare Dashboard → Workers & Pages → Create → Pages → 连接 Git 仓
 | 配置项 | 值 |
 |---|---|
 | Framework preset | `Vite` |
-| Build command | `npm run build` |
+| Build command | `npm install && npm run build` ⚠️ |
 | Build output directory | `dist` |
 | Root directory | 留空（仓库根目录） |
+
+**为什么 build command 前面要加 `npm install`**：
+
+`package-lock.json` 是在 Windows 上生成的，`packages` 段里只实体化了 Windows 版的原生二进制
+（`@rollup/rollup-win32-x64-msvc`），缺少 Linux 对应的 `@rollup/rollup-linux-x64-gnu`
+（npm 的历史遗留问题，见 [npm/cli#4828](https://github.com/npm/cli/issues/4828)）。
+
+Cloudflare 默认执行 `npm clean-install`（等价 `npm ci`），它**严格按 lock 文件安装、
+不补齐其他平台的包**，于是构建阶段 rollup 加载不到原生模块直接崩：
+
+```
+Error: Cannot find module @rollup/rollup-linux-x64-gnu
+```
+
+Vercel 默认用的是 `npm install`，会按当前平台补齐，所以同样的仓库在 Vercel 上不会暴露这个问题。
+
+构建命令里显式跑一次 `npm install` 就能补上缺失的平台包（依赖已装好，这步很快）。
+改完记得在 Deployments 页面点 **Retry deployment**。
 
 **Node 版本必须在仓库里锁死**：
 
