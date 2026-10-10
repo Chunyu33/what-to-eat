@@ -56,7 +56,7 @@ export const MainStage: React.FC<MainStageProps> = ({
         >
           {gameState === 'idle' && <p className="text-gray-400 dark:text-gray-500 font-medium">准备好开始了吗？</p>}
           {gameState === 'spinning' && <p className="text-orange-500 font-bold animate-pulse">正在纠结中...</p>}
-          {gameState === 'won' && <p className="text-green-600 dark:text-green-400 font-bold text-lg">就决定是它了！</p>}
+          {gameState === 'won' && <p className="text-green-600 dark:text-green-400 font-bold text-lg">抽到啦，是它吗？</p>}
         </motion.div>
       </div>
     </main>

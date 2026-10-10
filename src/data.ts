@@ -23,7 +23,7 @@ export const FOOD_DATA: FoodItem[] = [
   { id: 'bf-8', name: '牛奶麦片', emoji: '🥛', category: '西式早餐', description: '健康营养的西式早餐，开启活力一天！', color: 'bg-blue-50 text-blue-600 border-blue-200', timeOfDay: [TimeOfDay.MORNING] },
   { id: 'bf-9', name: '肠粉', emoji: '🍜', category: '粤式早餐', description: '米浆蒸成的薄皮，包裹着虾仁或叉烧，淋上酱油，滑嫩爽口！', color: 'bg-emerald-50 text-emerald-600 border-emerald-200', timeOfDay: [TimeOfDay.MORNING] },
   { id: 'bf-10', name: '猪杂粥', emoji: '🥣', category: '粤式早餐', description: '新鲜的猪杂熬制的粥品，营养丰富，暖心暖胃！', color: 'bg-amber-50 text-amber-600 border-amber-200', timeOfDay: [TimeOfDay.MORNING] },
-  { id: 'bf-11', name: '信宜捞粉', emoji: '🍜', category: '粤式早餐', description: '广东信宜特色，爽滑的米粉配上秘制豉油，简单却美味！', color: 'bg-orange-50 text-orange-600 border-orange-200', timeOfDay: [TimeOfDay.MORNING] },
+  { id: 'bf-11', name: '捞粉', emoji: '🍜', category: '粤式早餐', description: '粤西特色，爽滑的米粉配上秘制豉油，简单却美味！', color: 'bg-orange-50 text-orange-600 border-orange-200', timeOfDay: [TimeOfDay.MORNING] },
 
   // === 午餐 (11:00-14:00) - 工作日正餐 ===
   { id: 'lu-1', name: '兰州拉面', emoji: '🍜', category: '面食', description: '面条在师傅手里变魔术，一清二白三红四绿五黄，就是没有女朋友！', color: 'bg-blue-50 text-blue-600 border-blue-200', timeOfDay: [TimeOfDay.NOON, TimeOfDay.EVENING] },
@@ -78,12 +78,12 @@ export const FOOD_DATA: FoodItem[] = [
   { id: 'ls-8', name: '麻辣烫', emoji: '🍲', category: '川渝', description: '一个人的火锅，孤独者的狂欢，想吃什么拿什么，就是这么任性！', color: 'bg-red-100 text-red-600 border-red-200', timeOfDay: [TimeOfDay.LATE_NIGHT] },
   { id: 'ls-9', name: '南昌拌粉', emoji: '🍜', category: '粉类', description: '江西人的骄傲，辣油花生米爽滑Q弹，一碗就上头！', color: 'bg-red-50 text-red-600 border-red-200', timeOfDay: [TimeOfDay.LATE_NIGHT] },
 
-  // === 全天适合 ===
-  { id: 'al-1', name: '寿司', emoji: '🍣', category: '日料', description: '米饭和鱼的爱情结晶，芥末是它们的媒人，Wasabi会让你泪流满面！', color: 'bg-rose-100 text-rose-600 border-rose-200' },
-  { id: 'al-6', name: '天妇罗', emoji: '🍤', category: '日料', description: '万物皆可天妇罗，炸虾炸鱼炸蔬菜，酥脆到让人怀疑人生！', color: 'bg-yellow-50 text-yellow-600 border-yellow-200' },
+  // === 主食 / 轻食 / 快餐（跨正餐时段，不进早餐和下午茶）===
+  { id: 'al-1', name: '寿司', emoji: '🍣', category: '日料', description: '米饭和鱼的爱情结晶，芥末是它们的媒人，Wasabi会让你泪流满面！', color: 'bg-rose-100 text-rose-600 border-rose-200', timeOfDay: [TimeOfDay.NOON, TimeOfDay.EVENING] },
+  { id: 'al-6', name: '天妇罗', emoji: '🍤', category: '日料', description: '万物皆可天妇罗，炸虾炸鱼炸蔬菜，酥脆到让人怀疑人生！', color: 'bg-yellow-50 text-yellow-600 border-yellow-200', timeOfDay: [TimeOfDay.NOON, TimeOfDay.EVENING] },
   { id: 'al-10', name: '水饺/云吞', emoji: '🥟', category: '速食', description: '冰箱里的存货，开水一煮就是一顿，懒人的智慧结晶！', color: 'bg-stone-100 text-stone-600 border-stone-200', timeOfDay: [TimeOfDay.NOON, TimeOfDay.EVENING] },
-  { id: 'al-11', name: 'Subway/三明治', emoji: '🥪', category: '轻食', description: '蔬菜和肉类的层层叠叠，像极了人生的起起落落！', color: 'bg-green-100 text-green-600 border-green-200' },
-  { id: 'al-12', name: 'Taco', emoji: '🌮', category: '墨西哥', description: '玉米饼卷一切，萨尔萨酱是它的灵魂，吃的时候要小心别掉衣服上！', color: 'bg-yellow-50 text-yellow-600 border-yellow-200' },
+  { id: 'al-11', name: 'Subway/三明治', emoji: '🥪', category: '轻食', description: '蔬菜和肉类的层层叠叠，像极了人生的起起落落！', color: 'bg-green-100 text-green-600 border-green-200', timeOfDay: [TimeOfDay.MORNING, TimeOfDay.NOON, TimeOfDay.EVENING] },
+  { id: 'al-12', name: 'Taco', emoji: '🌮', category: '墨西哥', description: '玉米饼卷一切，萨尔萨酱是它的灵魂，吃的时候要小心别掉衣服上！', color: 'bg-yellow-50 text-yellow-600 border-yellow-200', timeOfDay: [TimeOfDay.NOON, TimeOfDay.EVENING, TimeOfDay.LATE_NIGHT] },
   { id: 'al-14', name: '凉皮', emoji: '🥗', category: '陕西风味', description: '夏天的一股清流，酸辣爽口，吃完感觉灵魂都升华了！', color: 'bg-red-50 text-red-500 border-red-200', timeOfDay: [TimeOfDay.NOON, TimeOfDay.EVENING] },
   { id: 'al-15', name: '肉夹馍', emoji: '🥙', category: '陕西风味', description: '肉：我被夹在中间好难受，馍：你难受什么，最后被吃掉的是我！', color: 'bg-amber-50 text-amber-700 border-amber-200', timeOfDay: [TimeOfDay.NOON, TimeOfDay.EVENING] },
   { id: 'al-16', name: '剩菜盲盒', emoji: '🥡', category: '生存', description: '昨天剩菜的二次生命，微波炉加热后又是新的一餐！', color: 'bg-gray-100 text-gray-500 border-gray-200', timeOfDay: [TimeOfDay.NOON, TimeOfDay.EVENING, TimeOfDay.LATE_NIGHT] },
@@ -96,8 +96,8 @@ export const FOOD_DATA: FoodItem[] = [
   { id: 'al-4', name: '石锅拌饭', emoji: '🥘', category: '韩料', description: '锅巴是这道菜的灵魂，辣酱是它的心脏，拌匀了就是完美的人生！', color: 'bg-red-100 text-red-600 border-red-200', timeOfDay: [TimeOfDay.NOON, TimeOfDay.EVENING] },
   { id: 'al-5', name: '部队锅', emoji: '🥘', category: '韩料', description: '泡面年糕午餐肉的大杂烩，乱炖也有乱炖的美味！', color: 'bg-red-50 text-red-600 border-red-200', timeOfDay: [TimeOfDay.NOON, TimeOfDay.EVENING] },
   { id: 'al-7', name: '咖喱饭', emoji: '🍛', category: '日式/泰式', description: '浓郁的咖喱汁浇在米饭上，每一口都是异国风情的拥抱！', color: 'bg-yellow-100 text-yellow-700 border-yellow-300', timeOfDay: [TimeOfDay.NOON, TimeOfDay.EVENING] },
-  { id: 'al-8', name: '越南河粉', emoji: '🍜', category: '越南', description: '清淡鲜美的汤头，滑嫩的河粉，九层塔是它的点睛之笔！', color: 'bg-green-50 text-green-600 border-green-200', timeOfDay: [TimeOfDay.NOON, TimeOfDay.EVENING] },
-  { id: 'al-9', name: '泰式猪脚饭', emoji: '🍛', category: '泰式', description: '软糯入味的猪脚，酸辣的酱汁，每一口都是泰式风情！', color: 'bg-orange-50 text-orange-700 border-orange-200', timeOfDay: [TimeOfDay.NOON, TimeOfDay.EVENING] },
+  { id: 'al-8', name: '潮汕汤粉', emoji: '🍜', category: '潮汕风味', description: '一碗热汤粉下肚，牛肉丸还在弹牙，潮汕人的一天就这么开始了！', color: 'bg-green-50 text-green-600 border-green-200', timeOfDay: [TimeOfDay.NOON, TimeOfDay.EVENING] },
+  // { id: 'al-9', name: '泰式猪脚饭', emoji: '🍛', category: '泰式', description: '软糯入味的猪脚，酸辣的酱汁，每一口都是泰式风情！', color: 'bg-orange-50 text-orange-700 border-orange-200', timeOfDay: [TimeOfDay.NOON, TimeOfDay.EVENING] },
   { id: 'al-13', name: '酸汤猪脚', emoji: '🥘', category: '贵州风味', description: '猪脚：我在酸汤里泡澡，最后变成了胶原蛋白，让你变得更美！', color: 'bg-red-50 text-red-600 border-red-200', timeOfDay: [TimeOfDay.NOON, TimeOfDay.EVENING] },
   { id: 'al-19', name: '白切鸡', emoji: '🍗', category: '粤菜', description: '皮滑肉嫩，蘸上姜蓉酱油，简单却最能体现鸡肉的原汁原味！', color: 'bg-yellow-50 text-yellow-700 border-yellow-200', timeOfDay: [TimeOfDay.NOON, TimeOfDay.EVENING] },
   { id: 'al-20', name: '猪脚饭', emoji: '🍛', category: '粤式正餐', description: '卤得软烂入味的猪脚，配上酸菜和卤蛋，男人的浪漫就是这么实在！', color: 'bg-red-100 text-red-700 border-red-200', timeOfDay: [TimeOfDay.NOON, TimeOfDay.EVENING] },

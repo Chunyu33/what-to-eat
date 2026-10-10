@@ -1,99 +1,73 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { Utensils, RefreshCw } from 'lucide-react';
+import { Utensils, RefreshCw, Check } from 'lucide-react';
 import type { GameState } from '../types';
 
 interface ActionButtonProps {
   gameState: GameState;
   onStart: () => void;
-  isConfettiActive?: boolean;
+  onConfirm: () => void;
 }
 
 /**
- * 主要操作按钮组件
- * 用于触发随机选择美食
+ * 操作按钮区
+ * 主按钮随状态切换（开始随机 / 挑选中 / 换一个），
+ * 次按钮提供"就这个了"这个正向出口——满意时不用再靠"换一个"硬撑
  */
 export const ActionButton: React.FC<ActionButtonProps> = ({
   gameState,
   onStart,
-  isConfettiActive = false,
+  onConfirm,
 }) => {
-  // 添加移动端触摸处理
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const isTouching = useRef(false);
-  
-  // 处理移动端触摸事件
-  const handleTouchStart = () => {
-    isTouching.current = true;
-    // 不在这里调用 preventDefault，避免 passive event listener 错误
-  };
-  
-  const handleTouchEnd = () => {
-    if (isTouching.current && gameState !== 'spinning' && !isConfettiActive) {
-      isTouching.current = false;
-      // 确保在触摸结束后才触发点击
-      onStart();
-    }
-  };
+  const isSpinning = gameState === 'spinning';
 
-  // 处理点击事件
-  const handleClick = (e: React.MouseEvent) => {
-    // 只在需要时才调用 preventDefault
-    if (gameState === 'spinning' || isConfettiActive) {
-      e.preventDefault();
-      return;
-    }
-    onStart();
-  };
-
-  const getButtonText = () => {
-    if (isConfettiActive) {
-      return '庆祝中...';
-    }
+  // 主按钮的文案与图标
+  const getPrimaryContent = () => {
     switch (gameState) {
-      case 'idle':
-        return '开始随机';
       case 'spinning':
-        return '挑选...';
+        return { text: '挑选...', icon: <RefreshCw className="animate-spin" /> };
       case 'won':
-        return '换一个';
+        return { text: '换一个', icon: <Utensils className="animate-bounce" /> };
       default:
-        return '开始随机';
+        return { text: '开始随机', icon: <Utensils className="animate-bounce" /> };
     }
   };
 
-  const getButtonIcon = () => {
-    if (isConfettiActive) {
-      return <RefreshCw className="animate-spin" />;
-    }
-    switch (gameState) {
-      case 'spinning':
-        return <RefreshCw className="animate-spin" />;
-      default:
-        return <Utensils className="animate-bounce" />;
-    }
-  };
+  const primary = getPrimaryContent();
+  // 只有已经抽出结果（或初始预览）时才引导用户"就这个了"
+  const showConfirm = gameState === 'idle' || gameState === 'won';
 
   return (
-    <div className="flex-none p-6 flex justify-center z-30 pb-8">
+    <div className="flex-none p-6 pb-8 flex flex-wrap items-center justify-center gap-3 z-30">
       <motion.button
-        ref={buttonRef}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={handleClick}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-        disabled={gameState === 'spinning' || isConfettiActive}
-        className={`shadow-xl shadow-orange-500/30 dark:shadow-orange-500/10 bg-gradient-to-r text-white text-xl font-black py-4 px-16 rounded-full flex items-center gap-3 transition-all ring-4 ring-white dark:ring-slate-800 ${
-          isConfettiActive || gameState === 'spinning' 
-            ? 'from-gray-400 to-gray-500 disabled:opacity-60 disabled:cursor-not-allowed' 
+        whileHover={isSpinning ? undefined : { scale: 1.05 }}
+        whileTap={isSpinning ? undefined : { scale: 0.95 }}
+        onClick={onStart}
+        disabled={isSpinning}
+        className={`shadow-xl shadow-orange-500/30 dark:shadow-orange-500/10 bg-gradient-to-r text-white text-xl font-black py-4 px-14 rounded-full flex items-center gap-3 transition-all ring-4 ring-white dark:ring-slate-800 ${
+          isSpinning
+            ? 'from-gray-400 to-gray-500 disabled:opacity-60 disabled:cursor-not-allowed'
             : 'from-orange-500 to-rose-500 hover:shadow-orange-500/40 disabled:opacity-80 disabled:cursor-not-allowed'
         }`}
         style={{ touchAction: 'manipulation' }} // 优化移动端触摸
       >
-        {getButtonIcon()}
-        {getButtonText()}
+        {primary.icon}
+        {primary.text}
       </motion.button>
+
+      {/* 正向出口：抽到满意的直接定下来 */}
+      {showConfirm && (
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={onConfirm}
+          className="py-3.5 px-7 rounded-full font-bold text-orange-600 dark:text-orange-400 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-2 border-orange-300 dark:border-orange-800 hover:bg-orange-50 dark:hover:bg-slate-700 transition-all flex items-center gap-2"
+          style={{ touchAction: 'manipulation' }}
+        >
+          <Check size={18} />
+          就这个了
+        </motion.button>
+      )}
     </div>
   );
 };

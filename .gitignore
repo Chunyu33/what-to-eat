@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# WorkBuddy 工作目录（本地记忆/临时数据，不进仓库）
+.workbuddy
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

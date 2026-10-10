@@ -1,13 +1,18 @@
 /**
  * 时间段相关工具函数
+ *
+ * ⚠️ 这里的区间是「决策窗口」，不是「用餐时间」。
+ * 这个工具是让人**提前**决定吃什么的，所以时段边界要比饭点提前：
+ * 比如早上窗口到 9:00 就结束（再晚你该想的是午饭了），而不是拖到 11:00。
+ * 改边界时请对照「决策窗口」语义，不要直接对准饭点。
  */
 
 export const TimeOfDay = {
-  MORNING: 'morning',      // 早餐 (6:00-11:00)
-  NOON: 'noon',           // 中午 (11:00-14:00)
-  AFTERNOON_TEA: 'afternoon_tea', // 下午茶 (14:00-17:00)
-  EVENING: 'evening',     // 晚上 (17:00-21:00)
-  LATE_NIGHT: 'late_night' // 宵夜 (21:00-6:00)
+  MORNING: 'morning',      // 早上 5:00-9:00，决定早餐
+  NOON: 'noon',           // 中午 9:00-12:00，决定午餐
+  AFTERNOON_TEA: 'afternoon_tea', // 下午茶 12:00-15:00，决定下午茶
+  EVENING: 'evening',     // 晚上 15:00-20:00，决定晚餐
+  LATE_NIGHT: 'late_night' // 宵夜 20:00-5:00，决定宵夜
 } as const;
 
 export type TimeOfDay = typeof TimeOfDay[keyof typeof TimeOfDay];
@@ -28,15 +33,15 @@ export const TIME_OF_DAY_INFO = {
     emoji: '🌅',
     description: '美好的一天从早餐开始',
     color: 'bg-amber-100 text-amber-700 border-amber-200',
-    hourRange: [6, 11] as [number, number]
+    hourRange: [5, 9] as [number, number]
   },
   [TimeOfDay.NOON]: {
     id: TimeOfDay.NOON,
     name: '中午',
     emoji: '☀️',
-    description: '午餐时间，补充能量',
+    description: '午饭该定下来了',
     color: 'bg-orange-100 text-orange-700 border-orange-200',
-    hourRange: [11, 14] as [number, number]
+    hourRange: [9, 12] as [number, number]
   },
   [TimeOfDay.AFTERNOON_TEA]: {
     id: TimeOfDay.AFTERNOON_TEA,
@@ -44,15 +49,15 @@ export const TIME_OF_DAY_INFO = {
     emoji: '🍰',
     description: '茶歇时光，放松一下',
     color: 'bg-pink-100 text-pink-700 border-pink-200',
-    hourRange: [14, 17] as [number, number]
+    hourRange: [12, 15] as [number, number]
   },
   [TimeOfDay.EVENING]: {
     id: TimeOfDay.EVENING,
     name: '晚上',
     emoji: '🌙',
-    description: '晚餐时刻，享受美味',
+    description: '晚饭该定下来了',
     color: 'bg-indigo-100 text-indigo-700 border-indigo-200',
-    hourRange: [17, 21] as [number, number]
+    hourRange: [15, 20] as [number, number]
   },
   [TimeOfDay.LATE_NIGHT]: {
     id: TimeOfDay.LATE_NIGHT,
@@ -60,21 +65,29 @@ export const TIME_OF_DAY_INFO = {
     emoji: '🌃',
     description: '夜深了，来点宵夜',
     color: 'bg-purple-100 text-purple-700 border-purple-200',
-    hourRange: [21, 6] as [number, number]
+    hourRange: [20, 5] as [number, number]
   }
 } as const;
 
 /**
- * 获取当前时间段
+ * 获取当前时间段（按决策窗口划分）
  */
 export const getCurrentTimeOfDay = (): TimeOfDay => {
   const hour = new Date().getHours();
   
-  if (hour >= 6 && hour < 11) return TimeOfDay.MORNING;
-  if (hour >= 11 && hour < 14) return TimeOfDay.NOON;
-  if (hour >= 14 && hour < 17) return TimeOfDay.AFTERNOON_TEA;
-  if (hour >= 17 && hour < 21) return TimeOfDay.EVENING;
+  if (hour >= 5 && hour < 9) return TimeOfDay.MORNING;
+  if (hour >= 9 && hour < 12) return TimeOfDay.NOON;
+  if (hour >= 12 && hour < 15) return TimeOfDay.AFTERNOON_TEA;
+  if (hour >= 15 && hour < 20) return TimeOfDay.EVENING;
   return TimeOfDay.LATE_NIGHT;
+};
+
+/**
+ * 把时段区间格式化成 "05:00 - 09:00"，跨天的宵夜会显示成 "20:00 - 05:00"
+ */
+export const formatHourRange = (range: readonly [number, number]): string => {
+  const format = (hour: number) => `${String(hour).padStart(2, '0')}:00`;
+  return `${format(range[0])} - ${format(range[1])}`;
 };
 
 /**

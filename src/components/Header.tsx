@@ -43,8 +43,10 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* 右侧按钮组 */}
       <div className="flex items-center gap-3">
-        {/* 时间段显示 */}
-        <TimeDisplay />
+        {/* 时间段显示：内容与左侧选择器按钮重复，窄屏隐藏，避免把 header 挤爆 */}
+        <div className="hidden sm:block">
+          <TimeDisplay />
+        </div>
         
         {/* 主题切换按钮 */}
         <button 
